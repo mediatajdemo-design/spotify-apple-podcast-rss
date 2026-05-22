@@ -1,6 +1,15 @@
 {
-  "functions": {
-      "runtime": "python3.11"
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/spotify_vercel_api_rss.py",
+      "use": "@vercel/python"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/spotify_vercel_api_rss.py"
+    }
+  ]
 }
