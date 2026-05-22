@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/spotify_vercel_api_rss": {
+    "api/spotify_vercel_api_rss.py": {
       "runtime": "python3.11"
     }
   }
