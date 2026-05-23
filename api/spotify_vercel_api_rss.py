@@ -1,49 +1,41 @@
 from http.server import BaseHTTPRequestHandler
-from db import supabase
+
+try:
+    from spotifyappledb import supabase
+except Exception as e:
+    supabase = None
+    IMPORT_ERROR = str(e)
+
 
 class handler(BaseHTTPRequestHandler):
 
     def do_GET(self):
 
-        data = supabase.table("news") \
-            .select("*") \
-            .eq("is_audio_generated", True) \
-            .execute()
+        try:
 
-        rows = data.data
+            if supabase is None:
+                raise Exception(IMPORT_ERROR)
 
-        items = ""
+            data = supabase.table("news") \
+                .select("*") \
+                .execute()
 
-        for row in rows:
+            rows = data.data
 
-            title = row["title"]
-            audio_url = row["audio_url"]
+            self.send_response(200)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
 
-            if not audio_url:
-                continue
+            self.wfile.write(
+                str(rows).encode()
+            )
 
-            items += f"""
-            <item>
-                <title>{title}</title>
-                <enclosure url="{audio_url}" type="audio/mpeg"/>
-            </item>
-            """
+        except Exception as e:
 
-        rss = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-<channel>
-<title>AI Podcast</title>
-<description>AI Generated Podcast</description>
-<link>https://your-vercel-domain.vercel.app</link>
+            self.send_response(500)
+            self.send_header("Content-type", "text/plain")
+            self.end_headers()
 
-{items}
-
-</channel>
-</rss>
-"""
-
-        self.send_response(200)
-        self.send_header("Content-type", "application/xml")
-        self.end_headers()
-
-        self.wfile.write(rss.encode())
+            self.wfile.write(
+                str(e).encode()
+            )
