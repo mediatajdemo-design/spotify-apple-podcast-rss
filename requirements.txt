@@ -1,6 +1,2 @@
-<<<<<<< HEAD
 supabase
-=======
-supabase
->>>>>>> afa8c2c90c9e9c517acf5ff2427393f14ce2caa5
 requests
