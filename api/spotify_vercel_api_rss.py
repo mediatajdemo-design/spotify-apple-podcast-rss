@@ -59,7 +59,7 @@ class handler(BaseHTTPRequestHandler):
     <itunes:email>mediatajdemo@gmail.com</itunes:email>
 </itunes:owner>
 
-<itunes:image href="<itunes:image href="https://oklpimfespctlovlijzn.supabase.co/storage/v1/object/public/spotify-apple-podcast-bg-image/cover.jpg"/>
+<itunes:image href="https://oklpimfespctlovlijzn.supabase.co/storage/v1/object/public/spotify-apple-podcast-bg-image/cover.jpg"/>
 
 <lastBuildDate>Mon, 01 Jan 2026 00:00:00 GMT</lastBuildDate>
 
