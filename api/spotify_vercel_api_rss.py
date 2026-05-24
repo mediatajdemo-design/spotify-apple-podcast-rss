@@ -40,13 +40,27 @@ class handler(BaseHTTPRequestHandler):
                 """
 
             rss_feed = f"""<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
+<rss version="2.0"
+    xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
 
 <channel>
+
 <title>AI Podcast</title>
-<link>https://your-domain.com</link>
-<description>Auto generated AI podcast feed</description>
+<link>https://spotify-apple-podcast-rss.vercel.app/</link>
+<description>AI generated news podcast</description>
+
 <language>en-us</language>
+
+<!-- 🔥 REQUIRED FOR SPOTIFY -->
+<itunes:author>AI Podcast System</itunes:author>
+
+<itunes:owner>
+    <itunes:name>AI Podcast</itunes:name>
+    <itunes:email>mediatajdemo@gmail.com</itunes:email>
+</itunes:owner>
+
+<itunes:image href="<itunes:image href="https://oklpimfespctlovlijzn.supabase.co/storage/v1/object/public/spotify-apple-podcast-bg-image/cover.jpg"/>
+
 <lastBuildDate>Mon, 01 Jan 2026 00:00:00 GMT</lastBuildDate>
 
 {rss_items}
