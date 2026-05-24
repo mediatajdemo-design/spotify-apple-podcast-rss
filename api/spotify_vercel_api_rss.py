@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 from spotifyappledb import supabase
+import html
 
 
 class handler(BaseHTTPRequestHandler):
@@ -20,13 +21,12 @@ class handler(BaseHTTPRequestHandler):
 
             for row in rows:
 
-                title = row["title"]
+                title = html.escape(row["title"])
                 audio_url = row.get("audio_url")
 
                 if not audio_url:
                     continue
 
-                # ✅ clean URL safety
                 audio_url = audio_url.split("?")[0]
 
                 rss_items += f"""
@@ -34,17 +34,20 @@ class handler(BaseHTTPRequestHandler):
                     <title>{title}</title>
                     <description>{title}</description>
                     <enclosure url="{audio_url}" type="audio/mpeg"/>
-                    <guid>{audio_url}</guid>
+                    <guid isPermaLink="false">{audio_url}</guid>
+                    <pubDate>Mon, 01 Jan 2026 00:00:00 GMT</pubDate>
                 </item>
                 """
 
             rss_feed = f"""<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
+
 <channel>
 <title>AI Podcast</title>
 <link>https://your-domain.com</link>
 <description>Auto generated AI podcast feed</description>
 <language>en-us</language>
+<lastBuildDate>Mon, 01 Jan 2026 00:00:00 GMT</lastBuildDate>
 
 {rss_items}
 
