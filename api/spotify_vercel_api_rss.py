@@ -1,5 +1,6 @@
 from http.server import BaseHTTPRequestHandler
 from spotifyappledb import supabase
+
 import html
 from email.utils import formatdate
 
@@ -26,83 +27,80 @@ class handler(BaseHTTPRequestHandler):
             for row in rows:
 
                 title = html.escape(row["title"])
+
                 audio_url = row.get("audio_url")
 
                 if not audio_url:
                     continue
 
-                # remove extra query params if any
+                # clean url
                 audio_url = audio_url.split("?")[0]
 
                 rss_items += f"""
-                <item>
+<item>
 
-                    <title>{title}</title>
+<title>{title}</title>
 
-                    <description>{title}</description>
+<description>{title}</description>
 
-                    <enclosure
-                        url="{audio_url}"
-                        type="audio/mpeg"
-                    />
+<enclosure
+    url="{audio_url}"
+    length="7200000"
+    type="audio/mpeg"/>
 
-                    <guid isPermaLink="false">
-                        {audio_url}
-                    </guid>
+<guid isPermaLink="false">{audio_url}</guid>
 
-                    <pubDate>
-                        {current_date}
-                    </pubDate>
+<pubDate>{current_date}</pubDate>
 
-                </item>
-                """
+<itunes:duration>03:00</itunes:duration>
+
+<itunes:explicit>false</itunes:explicit>
+
+</item>
+"""
 
             rss_feed = f"""<?xml version="1.0" encoding="UTF-8"?>
 
 <rss version="2.0"
-xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd">
+xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd"
+xmlns:atom="http://www.w3.org/2005/Atom">
 
 <channel>
 
 <title>AI Podcast</title>
 
-<link>
-https://spotify-apple-podcast-rss.vercel.app/
-</link>
+<link>https://spotify-apple-podcast-rss.vercel.app/</link>
 
-<description>
-AI generated news podcast
-</description>
+<atom:link
+href="https://spotify-apple-podcast-rss.vercel.app/"
+rel="self"
+type="application/rss+xml"/>
 
-<language>
-en-us
-</language>
+<description>AI generated news podcast</description>
 
-<itunes:type>
-episodic
-</itunes:type>
+<language>en-us</language>
 
-<itunes:author>
-AI Podcast System
-</itunes:author>
+<itunes:type>episodic</itunes:type>
+
+<itunes:author>AI Podcast System</itunes:author>
+
+<itunes:category text="Technology"/>
+
+<itunes:explicit>false</itunes:explicit>
 
 <itunes:owner>
 
-    <itunes:name>
-    AI Podcast
-    </itunes:name>
+<itunes:name>AI Podcast</itunes:name>
 
-    <itunes:email>
-    mediatajdemo@gmail.com
-    </itunes:email>
+<itunes:email>
+mediatajdemo@gmail.com
+</itunes:email>
 
 </itunes:owner>
 
 <itunes:image href="https://oklpimfespctlovlijzn.supabase.co/storage/v1/object/public/spotify-apple-podcast-bg-image/cover.jpg"/>
 
-<lastBuildDate>
-{current_date}
-</lastBuildDate>
+<lastBuildDate>{current_date}</lastBuildDate>
 
 {rss_items}
 
@@ -115,7 +113,7 @@ AI Podcast System
 
             self.send_header(
                 "Content-type",
-                "application/xml"
+                "application/rss+xml"
             )
 
             self.end_headers()
